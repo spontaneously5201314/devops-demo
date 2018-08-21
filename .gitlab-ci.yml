@@ -1,0 +1,9 @@
+before_script:
+  - echo "before"
+
+after_script:
+  - echo "after"
+
+test:
+  script: "echo 'test'"
+
