@@ -5,5 +5,7 @@ after_script:
   - echo "after"
 
 test:
+  tags:
+    - master
   script: "echo 'test'"
 
