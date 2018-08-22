@@ -1,24 +1,42 @@
 image: maven:3.5.4-jdk-8
 
+variables:
+  MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+
+cache:
+  paths:
+  - .m2/repository
+  - target/
+
 build:
+  stage: build
   tags:
     - userJava8
-  script: "mvn install -B"
+  script:
+    - mvn $MAVEN_CLI_OPTS compile
 
+test:
+  stage: test
+  tags:
+    - userJava8
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+
+deploy:
+  stage: deploy
+  tags:
+    - userJava8
+  script:
+    - mvn $MAVEN_CLI_OPTS deploy
+  only:
+    - master
 
 #stages:
 #  - install_plugins
 #  - package
 #  - install
 #  - deploy
-#
-#variables:
-#  MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
-#  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
-#
-#cache:
-#  paths:
-#  - .m2/repository
 #
 #.validate: &validate
 #  stage: build
