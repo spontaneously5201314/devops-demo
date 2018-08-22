@@ -7,5 +7,5 @@ after_script:
 test:
   tags:
     - userJava8
-  script: "echo 'test'"
+  script: "echo 'test use'"
 
