@@ -6,6 +6,6 @@ after_script:
 
 test:
   tags:
-    - master
+    - useJava8
   script: "echo 'test'"
 
