@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IndexController {
 
+    private static final String HELLO = "hello";
+
     @GetMapping("/{word}")
     public String index(@PathVariable("word") String word) {
-        return word;
+        return HELLO + word;
     }
 
 }
