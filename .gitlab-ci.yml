@@ -99,19 +99,27 @@ stages:
 - test
 - deploy
 
+.job_tags: &job_tags
+  tags:
+    - devops-demo
+
 build_job:
+  <<: *job_tags
   stage: build
   script:
   - echo "build starting..."
   - mvn clean package
-  tags:
-  - devops-demo
+#  tags:
+#  - devops-demo
   allow_failure: true
   artifacts:
     paths:
     - target/*.jar
+    expire_in: 1 days
+  retry: 2
 
 clean_build_job:
+  <<: *job_tags
   stage: build
   script:
   - echo "clean build starting..."
