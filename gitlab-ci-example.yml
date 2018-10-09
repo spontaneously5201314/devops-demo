@@ -1,0 +1,75 @@
+# 打包 jar 包
+maven-build:
+  stage: build-jar
+  script:
+  - mvn clean package
+  - cp -r $SERVER_DIR/target target
+  - ls target
+# 存放我们的应用 jar 包，方便我们下载和在之后的一次构建中使用
+  artifacts:
+    expire_in: 1 week
+    paths:
+    - target/*.jar
+# 只在我们的主干分支中进行 build 操作
+  only:
+  - test
+  - master
+
+# build docker image
+docker-build:
+  image: docker:git
+  stage: build-image
+  script:
+# docker register 的一些信息和一些公共变量我们可以在 group 的 ci/cd 参数中设置，方便我们同一个 group 不同项目公用
+  - export DOCKER_DIR=$SERVER_DIR/deploy/docker
+  - export DOCKER_IMAGE=$CI_DOCKER_REGISTRY_SERVER/$CI_DOCKER_REGISTRY_SERVER_NAMESPACE/$SERVER_NAME
+  - export DOCKER_TAG=$(git rev-parse --short HEAD)
+  - export DOCKER_FULL_NAME=$DOCKER_IMAGE:$DOCKER_TAG
+  - echo $DOCKER_FULL_NAME
+  - cp target/*.jar $DOCKER_DIR/server.jar
+  - docker build -t $DOCKER_FULL_NAME $DOCKER_DIR
+  - docker login -u $CI_DOCKER_REGISTRY_SERVER_NAME -p $CI_DOCKER_REGISTRY_SERVER_PASS $CI_DOCKER_REGISTRY_SERVER
+  - docker push $DOCKER_FULL_NAME
+# 将我们构建镜像用的相关参数存到一个文件里面并通过 cache 传递到 deploy 相关的操作操作中
+  - echo version=$DOCKER_TAG >> cache.properties
+  - echo branch=$CI_COMMIT_REF_NAME >> cache.properties
+  - echo image=$DOCKER_IMAGE >> cache.properties
+  - echo registry=$CI_K8S_REGISTRY_NAME >> cache.properties && echo "" >> cache.properties
+  - cat cache.properties
+  - echo $CI_PIPELINE_ID
+# 设置 cache key 为 $CI_PIPELINE_ID, 方便我们在同一个 pipeline 中传递信息
+  cache:
+    key: "$CI_PIPELINE_ID"
+    paths:
+    - cache.properties
+  dependencies:
+  - maven-build
+  only:
+  - test
+  - master
+
+# deploy beta k8s
+k8s-deploy-beta:
+  image: prophet/kubectl
+  stage: deploy
+  script:
+# 把 kubectl 相关的配置参数拷贝到我们的 deploy 容器中，这里是通过 gitlab-ci 的 volume 实现的，这种方式不好，最好是通过配置 ci 的 secret 参数来进行配置
+  - cp -r /cache/.kube ~/.kube
+# go-tpl-replacer 是一个实现了 go template 的命令行工具，我们的项目中提供的 k8s 配置 yaml 只需要利用模板参数，然后在 deploy 阶段自动替换
+# 该项目实现比较简单，但是感觉还是挺实用的，项目地址是 https://github.com/fudali113/go-tpl-replacer
+  - go-tpl-replacer -tpl-files $SERVER_DIR/deploy/k8s/deploy.yaml -args "env=beta" -arg-files cache.properties > deploy.yaml
+  - cat deploy.yaml
+  - kubectl apply -f deploy.yaml
+  cache:
+    key: "$CI_PIPELINE_ID"
+    paths:
+    - cache.properties
+# 这里配置我们的环境，这样子在 ci/cd 的 environments 目录下可以看到我们 deploy 的相关的信息
+  environment:
+    name: beta
+    url: https://47.95.143.20:31320
+  dependencies:
+  - docker-build
+  only:
+  - test
+  - master

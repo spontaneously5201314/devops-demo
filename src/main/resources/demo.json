@@ -1,0 +1,101 @@
+{
+  "user": {
+    "id": 17,
+    "idCode": "EEEEEEEX",
+    "nickName": "cyc1918",
+    "headId": 22002,
+    "headImgId": 23001,
+    "areaLocation": "",
+    "battleId": 0,
+    "lastTime": "2018-07-11 19:30:11",
+    "zone": 0,
+    "hardId": "cyc1917",
+    "diamond": 10000,
+    "coin": 10000,
+    "cupLevel": 1,
+    "cup": 0,
+    "level": 1,
+    "exp": 0,
+    "heroCoin": 100000,
+    "guide": 0,
+    "deleted": 0
+  },
+  "hero": {
+    "heroList": [
+      {
+        "userId": 17,
+        "heroId": 1001,
+        "skinId": 100101,
+        "cup": 0,
+        "cupLevel": 1,
+        "hpSkill": 101001001,
+        "attackSkill": 201001001,
+        "superSkill": 401001001,
+        "skinList": [
+          {
+            "heroId": 1001,
+            "skinId": 100101
+          }
+        ],
+        "mmr": 1000,
+        "haveHalo": 0
+      },
+      {
+        "userId": 17,
+        "heroId": 1002,
+        "skinId": 100201,
+        "cup": 0,
+        "cupLevel": 1,
+        "hpSkill": 101002001,
+        "attackSkill": 201002001,
+        "superSkill": 401002001,
+        "skinList": [
+          {
+            "heroId": 1002,
+            "skinId": 100201
+          }
+        ],
+        "mmr": 1000,
+        "haveHalo": 0
+      },
+      {
+        "userId": 17,
+        "heroId": 1003,
+        "skinId": 100301,
+        "cup": 0,
+        "cupLevel": 1,
+        "hpSkill": 101003001,
+        "attackSkill": 201003001,
+        "superSkill": 401003001,
+        "skinList": [
+          {
+            "heroId": 1003,
+            "skinId": 100301
+          }
+        ],
+        "mmr": 1000,
+        "haveHalo": 0
+      }
+    ]
+  },
+  "onlineState": "0",
+  "area": "China",
+  "questMap": {
+    "1": {
+      "todayQueried": 0,
+      "haveCanReceive": 0
+    },
+    "2": {
+      "todayQueried": 1,
+      "haveCanReceive": 1
+    }
+  },
+  "switchMap": {
+    "reporter": "1",
+    "pvr": "0"
+  },
+  "noticeMap": {
+    "mysticalFlag": 1,
+    "newMail": 0
+  }
+}
