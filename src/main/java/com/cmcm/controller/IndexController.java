@@ -1,5 +1,6 @@
 package com.cmcm.controller;
 
+import com.ctrip.framework.apollo.ConfigService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,11 @@ public class IndexController {
     @GetMapping("/{word}")
     public String index(@PathVariable("word") String word) {
         return HELLO + word;
+    }
+
+    @GetMapping("/testApollo")
+    public String testApollo(){
+        return ConfigService.getConfig("application").getProperty("test","null");
     }
 
 }
